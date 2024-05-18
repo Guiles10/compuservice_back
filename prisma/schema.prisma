@@ -1,0 +1,138 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       String    @id
+  name     String    @unique
+  email    String    @unique
+  password String?
+  function String[]
+  isAdmin  Boolean
+  cards    Card[]
+  comments Comment[]
+
+  @@map("user")
+}
+
+model Card {
+  id          String     @id
+  title       String     @unique
+  description String
+  solution    String
+  priority    String
+  status      String
+  createdAt   String
+  updatedAt   String
+  deleteAt    String?
+  activitys   Activity[]
+  type        String[]
+  clients     String[]
+  workers     String[]
+  files       File[]
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  @@map("card")
+}
+
+model Activity {
+  id            String        @id
+  activity      String
+  ready         Boolean
+  subActivities SubActivity[]
+  createdAt     String
+  updatedAt     String
+
+  cards   Card   @relation(fields: [cardsId], references: [id])
+  cardsId String
+
+  @@map("activity")
+}
+
+model SubActivity {
+  id          String  @id
+  subActivity String
+  ready       Boolean
+  createdAt   String
+  updatedAt   String
+
+  activitys   Activity @relation(fields: [activitysId], references: [id])
+  activitysId String
+
+  @@map("subActivity")
+}
+
+model Comment {
+  id        String @id
+  title     String @unique
+  comment   String
+  createdAt String
+  updatedAt String
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  @@map("comment")
+}
+
+model Client {
+  id              String        @id
+  companyName     String        @unique
+  socialName      String
+  legalNature     String
+  cnpj            String        @unique
+  cpf             String        @unique
+  businessPhone_1 String
+  businessPhone_2 String
+  businessEmail   String
+  site            String
+  comment         String
+  cep             String
+  state           String
+  city            String
+  street          String
+  neighborhood    String
+  number          String
+  responsibles    Responsible[]
+
+  @@map("client")
+}
+
+model Responsible {
+  id       String @id
+  name     String
+  function String
+  email    String
+  phone    String
+
+  client   Client @relation(fields: [clientId], references: [id])
+  clientId String
+
+  @@map("responsible")
+}
+
+model File {
+  id        String @id
+  fileName  String @unique
+  url       String
+  createdAt String
+  updatedAt String
+
+  cards  Card   @relation(fields: [cardId], references: [id])
+  cardId String
+
+  @@map("file")
+}
