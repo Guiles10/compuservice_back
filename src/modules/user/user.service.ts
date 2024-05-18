@@ -1,21 +1,33 @@
 import { ConflictException, Injectable, NotAcceptableException, NotFoundException } from '@nestjs/common';
-import { CreateUseDto } from './dto/create-user.dto';
-import { UpdateUseDto } from './dto/update-user.dto';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 import { UserRepository } from './repositories/user.repository';
+import { hashSync } from 'bcryptjs';
 
 @Injectable()
 export class UserService {
 
   constructor(private userRepository: UserRepository){}
 
-  async create(createUserDto: CreateUseDto) {
+  async create(createUserDto: CreateUserDto) {
+    
     if(await this.userRepository.findByEmail(createUserDto.email)){
       throw new ConflictException("E-mail já está em uso!!!")
     }
     if (await this.userRepository.findByName(createUserDto.name)) {
       throw new ConflictException("Nome de usuário já está em uso!");
     }
-    const user = await this.userRepository.create(createUserDto)
+
+    const hashedPass = hashSync(createUserDto.password, 10);
+    const user = await this.userRepository.create({
+          name: createUserDto.name,
+          email: createUserDto.email,
+          password: hashedPass,
+          function: createUserDto.function,
+          isAdmin: createUserDto.isAdmin,
+  });
+
+    // const user = await this.userRepository.create(createUserDto)
     return user
   }
   
@@ -39,7 +51,7 @@ export class UserService {
     return users
   }
 
-  async update(id: string, updateUserDto: UpdateUseDto) {
+  async update(id: string, updateUserDto: UpdateUserDto) {
     const existingUser = await this.userRepository.findOne(id);
     if (!existingUser) {
       throw new NotFoundException('Cliente não encontrado');

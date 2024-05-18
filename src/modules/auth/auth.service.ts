@@ -9,7 +9,7 @@ export class AuthService {
 
     async validateUser(userEmail: string, userPassword: string){
         const user = await this.userService.findByEmail(userEmail)
-
+      console.log(user)
         if(user && user.password && userPassword){
             const passMatch = await compare(userPassword, user.password)
             if(passMatch){

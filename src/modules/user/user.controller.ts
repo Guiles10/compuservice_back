@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
-import { CreateUseDto } from './dto/create-user.dto';
-import { UpdateUseDto } from './dto/update-user.dto';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 import { JWTAuthGuard } from '../auth/jwt.auth.guard';
 import { ApiBearerAuth } from '@nestjs/swagger';
 
@@ -11,7 +11,7 @@ export class UserController {
 
   @ApiBearerAuth()
   @Post('')
-  create(@Body() createUserDto: CreateUseDto) {
+  create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
   }
 
@@ -31,7 +31,7 @@ export class UserController {
   @ApiBearerAuth()
   @UseGuards(JWTAuthGuard)
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUseDto) {
+  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.usersService.update(id, updateUserDto);
   }
 
