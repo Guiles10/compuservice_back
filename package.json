@@ -22,7 +22,6 @@
     "vercel-build": "npx prisma generate && nest build && npx prisma migrate deploy",
     "dev": "ts-node-dev src/server.ts"
   },
-  
   "dependencies": {
     "@nestjs/common": "^10.0.0",
     "@nestjs/config": "^3.2.2",
@@ -34,6 +33,7 @@
     "@nestjs/swagger": "^7.3.1",
     "@prisma/client": "^5.14.0",
     "@supabase/supabase-js": "^2.43.2",
+    "@vercel/functions": "^1.0.2",
     "bcryptjs": "^2.4.3",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
